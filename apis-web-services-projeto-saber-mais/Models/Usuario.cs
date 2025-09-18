@@ -1,0 +1,22 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace apis_web_services_projeto_saber_mais.Models
+{
+    [Table("Usuarios")] 
+    public class Usuario
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string Nome { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string Cpf { get; set; }
+        public string Descricao { get; set; }
+
+        //public int AvaliacaoId { get; set; }
+        public ICollection<Avaliacao> Avaliacoes { get; set; }
+    }
+}
