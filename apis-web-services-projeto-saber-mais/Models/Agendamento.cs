@@ -10,6 +10,17 @@ namespace apis_web_services_projeto_saber_mais.Models
         public int Id { get; set; }
         [Required]
         public DateTime DataHora { get; set; }
+
+        [Required]
+        public int UsuarioId { get; set; }
+        [Required]
+        public Usuario Usuario { get; set; }
+        
+        [Required]
+        public int ProfessorId { get; set; }
+        [Required]
+        public Professor Professor { get; set; }
+
         [Required]
         public StatusAgendamento Status { get; set; }
     }

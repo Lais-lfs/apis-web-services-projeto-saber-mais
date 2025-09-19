@@ -13,10 +13,22 @@ namespace apis_web_services_projeto_saber_mais.Models
         [Required]
         public string Comentario { get; set; }
 
-        // public int UsuarioId { get; set; }
+        [Required]
+        public int UsuarioAvaliadorId { get; set; }
+        
         [Required]
         public Usuario Avaliador { get; set; }
+
+        [Required]
+        public int UsuarioAvaliadoId { get; set; }
+
         [Required]
         public Usuario Avaliado { get; set; }
+
+        [Required]
+        public int AgendamentoId { get; set; }
+
+        [Required]
+        public Agendamento Agendamento { get; set; }
     }
 }

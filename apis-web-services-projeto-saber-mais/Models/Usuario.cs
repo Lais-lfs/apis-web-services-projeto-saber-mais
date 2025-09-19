@@ -16,7 +16,8 @@ namespace apis_web_services_projeto_saber_mais.Models
         public string Cpf { get; set; }
         public string Descricao { get; set; }
 
-        //public int AvaliacaoId { get; set; }
-        public ICollection<Avaliacao> Avaliacoes { get; set; }
+        public ICollection<Agendamento> AgendamentosComoAluno { get; set; }
+
+        public Professor Professor { get; set; } // Navegação para Professor, se aplicável
     }
 }
