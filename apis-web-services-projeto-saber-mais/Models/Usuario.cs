@@ -18,6 +18,8 @@ namespace apis_web_services_projeto_saber_mais.Models
 
         public ICollection<Agendamento> AgendamentosComoAluno { get; set; }
 
-        public Professor Professor { get; set; } // Navegação para Professor, se aplicável
+        public ICollection<Avaliacao> AvaliacoesUsuario { get; set; }
+
+        //public Professor Professor { get; set; } // Navegação para Professor, se aplicável
     }
 }

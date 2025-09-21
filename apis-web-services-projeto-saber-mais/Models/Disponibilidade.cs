@@ -15,7 +15,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         public DateTime HoraFim { get; set; }
 
         //[Required]
-        //public PerfilProfessor Professor { get; set; }
+        //public Professor Professor { get; set; }
         [Required]
         public int ProfessorId { get; set; }
     }

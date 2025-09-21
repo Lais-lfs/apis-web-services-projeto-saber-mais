@@ -4,16 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace apis_web_services_projeto_saber_mais.Models
 {
     [Table("Professores")]
-    public class Professor
+    public class Professor : Usuario
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public int UsuarioId { get; set; }
-        [Required]
-        public Usuario Usuario { get; set; }
-
         [Required]
         public string Certificacoes { get; set; }
         [Required]
@@ -28,5 +20,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         public ICollection<Disponibilidade> Disponibilidades { get; set; }
 
         public ICollection<Agendamento> Agendamentos { get; set; }
+
+        public ICollection<Avaliacao> AvaliacoesProfessor { get; set; }
     }
 }
