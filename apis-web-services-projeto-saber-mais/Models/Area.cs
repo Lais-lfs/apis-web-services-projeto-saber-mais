@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace apis_web_services_projeto_saber_mais.Models
 {
     [Table("Categorias")]
-    public class Categoria
+    public class Area
     {
         [Key]
         public int Id { get; set; }

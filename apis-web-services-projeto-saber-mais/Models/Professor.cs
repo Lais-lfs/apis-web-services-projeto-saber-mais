@@ -15,7 +15,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         public decimal Valor { get; set; }
 
         [Required]
-        public ICollection<Categoria> Categorias { get; set; }
+        public ICollection<Area> Areas { get; set; }
         [Required]
         public ICollection<Disponibilidade> Disponibilidades { get; set; }
 

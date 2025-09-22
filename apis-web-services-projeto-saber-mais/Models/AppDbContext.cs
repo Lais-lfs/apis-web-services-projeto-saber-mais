@@ -13,7 +13,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         public DbSet<Professor> Professores { get; set; }
         public DbSet<Agendamento> Agendamentos { get; set; }
         public DbSet<Avaliacao> Avaliacoes { get; set; }
-        public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
