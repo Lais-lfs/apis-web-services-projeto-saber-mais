@@ -65,7 +65,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         {
             var usuario = await _context.Usuarios.FindAsync(id);
 
-            if (usuario == null) NotFound();
+            if (usuario == null) return NotFound();
 
             _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
