@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace apis_web_services_projeto_saber_mais.Models
 {
@@ -9,15 +10,18 @@ namespace apis_web_services_projeto_saber_mais.Models
 
         [Required]
         public Semana DiaDaSemana { get; set; }
-        [Required]
-        public DateTime HoraInicio { get; set; }
-        [Required]
-        public DateTime HoraFim { get; set; }
 
-        //[Required]
-        //public Professor Professor { get; set; }
         [Required]
+        [Column(TypeName = "time")]
+        public TimeSpan HoraInicio { get; set; }
+
+        [Required]
+        [Column(TypeName = "time")]
+        public TimeSpan HoraFim { get; set; }
+
+        // Chave estrangeira para Professor
         public int ProfessorId { get; set; }
+        public virtual Professor Professor { get; set; }
     }
     public enum Semana
     {

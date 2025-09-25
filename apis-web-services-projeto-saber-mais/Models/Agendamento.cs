@@ -10,19 +10,19 @@ namespace apis_web_services_projeto_saber_mais.Models
         public int Id { get; set; }
         [Required]
         public DateTime DataHora { get; set; }
-
-        [Required]
-        public int UsuarioId { get; set; }
-        [Required]
-        public Usuario Usuario { get; set; }
-        
-        [Required]
-        public int ProfessorId { get; set; }
-        [Required]
-        public Professor Professor { get; set; }
-
         [Required]
         public StatusAgendamento Status { get; set; }
+
+        // Chave estrangeira para Professor
+        public int ProfessorId { get; set; }
+        public virtual Professor Professor { get; set; }
+
+        // Chave estrangeira para Aluno (que é um Usuário)
+        public int AlunoId { get; set; }
+        public virtual Usuario Aluno { get; set; }
+
+        // Relacionamento: Um agendamento pode ter até 2 avaliações (uma do aluno, uma do professor)
+        public virtual ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
     }
 
     public enum StatusAgendamento
@@ -31,5 +31,15 @@ namespace apis_web_services_projeto_saber_mais.Models
         Confirmado,
         Realizado,
         Cancelado
+    }
+    public enum DiaDaSemana
+    {
+        Domingo,
+        Segunda,
+        Terca,
+        Quarta,
+        Quinta,
+        Sexta,
+        Sabado
     }
 }
