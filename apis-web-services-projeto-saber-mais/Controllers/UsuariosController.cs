@@ -36,7 +36,10 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(c => c.Id == id);
+            var usuario = await _context.Usuarios
+                .Include(t => t.AgendamentosComoAluno) // Inclui os agendamentos onde o usuário é aluno
+                .Include(u => u.AvaliacoesFeitas) // Inclui as avaliações feitas pelo usuário
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (usuario == null)
             {
