@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace apis_web_services_projeto_saber_mais.Models
 {
@@ -18,46 +19,55 @@ namespace apis_web_services_projeto_saber_mais.Models
         {
             base.OnModelCreating(modelBuilder);
 
+            // --- Configuração de herança TPT (Table-per-Type) ---
+            modelBuilder.Entity<Usuario>().ToTable("Usuarios");
+            modelBuilder.Entity<Professor>().ToTable("Professores");
+
+            // Comparador para listas de strings (usado nos ValueComparers)
+            var listComparer = new ValueComparer<List<string>>(
+                (c1, c2) => c1.SequenceEqual(c2),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                c => c.ToList()
+            );
+
             // --- Configuração da Entidade Professor ---
             modelBuilder.Entity<Professor>(entity =>
             {
-
-                // Converter a lista de Certificacoes para uma string JSON no banco
+                // Certificacoes como JSON + ValueComparer
                 entity.Property(p => p.Certificacoes)
                     .HasConversion(
                         v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
                         v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null) ?? new List<string>()
-                    );
+                    )
+                    .Metadata.SetValueComparer(listComparer);
 
-                // Converter a lista de Competencias para uma string JSON no banco
+                // Competencias como JSON + ValueComparer
                 entity.Property(p => p.Competencias)
                     .HasConversion(
                         v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
                         v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null) ?? new List<string>()
-                    );
+                    )
+                    .Metadata.SetValueComparer(listComparer);
 
-                // Configurar o relacionamento Muitos-para-Muitos entre Professor e Área
+                // Relacionamento muitos-para-muitos entre Professor e Área
                 entity.HasMany(p => p.Areas)
                       .WithMany(c => c.Professores)
-                      .UsingEntity(j => j.ToTable("ProfessorArea")); // Tabela de junção explícita
+                      .UsingEntity(j => j.ToTable("ProfessorArea"));
             });
 
             // --- Configuração da Entidade Agendamento ---
             modelBuilder.Entity<Agendamento>(entity =>
             {
-                // Relacionamento com Aluno (Usuario)
                 entity.HasOne(a => a.Aluno)
                       .WithMany(u => u.AgendamentosComoAluno)
                       .HasForeignKey(a => a.AlunoId)
-                      .OnDelete(DeleteBehavior.Restrict); // Evitar exclusão em cascata se houver agendamento
+                      .OnDelete(DeleteBehavior.Restrict);
 
-                // Relacionamento com Professor
                 entity.HasOne(a => a.Professor)
                       .WithMany(p => p.AgendamentosComoProfessor)
                       .HasForeignKey(a => a.ProfessorId)
-                      .OnDelete(DeleteBehavior.Restrict); // Evitar exclusão em cascata
+                      .OnDelete(DeleteBehavior.Restrict);
 
-                // Converter o Enum StatusAgendamento para string no banco (mais legível)
                 entity.Property(a => a.Status)
                       .HasConversion<string>();
             });
@@ -65,31 +75,33 @@ namespace apis_web_services_projeto_saber_mais.Models
             // --- Configuração da Entidade Disponibilidade ---
             modelBuilder.Entity<Disponibilidade>(entity =>
             {
-                // Converter o Enum DiaDaSemana para string no banco
                 entity.Property(d => d.DiaDaSemana)
                       .HasConversion<string>();
+
+                entity.HasOne(d => d.Professor)
+                      .WithMany(p => p.Disponibilidades)
+                      .HasForeignKey(d => d.ProfessorId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // --- Configuração da Entidade Avaliacao ---
             modelBuilder.Entity<Avaliacao>(entity =>
             {
-                // Relacionamento com Aluno (Avaliador)
+                entity.HasOne(av => av.Agendamento)
+                      .WithMany()
+                      .HasForeignKey(av => av.AgendamentoId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasOne(av => av.AvaliadorAluno)
                       .WithMany(u => u.AvaliacoesFeitas)
                       .HasForeignKey(av => av.AvaliadorAlunoId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                // Relacionamento com Professor (Avaliador)
                 entity.HasOne(av => av.AvaliadorProfessor)
-                      .WithMany() // Um professor pode fazer várias avaliações, mas não temos uma coleção para isso no modelo
+                      .WithMany()
                       .HasForeignKey(av => av.AvaliadorProfessorId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
-
-
-
-
-
         }
     }
 }

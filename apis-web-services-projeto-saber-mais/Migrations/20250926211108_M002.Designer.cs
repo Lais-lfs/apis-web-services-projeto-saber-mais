@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using apis_web_services_projeto_saber_mais.Models;
 
@@ -11,9 +12,11 @@ using apis_web_services_projeto_saber_mais.Models;
 namespace apis_web_services_projeto_saber_mais.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250926211108_M002")]
+    partial class M002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,6 +150,36 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                     b.ToTable("Disponibilidades");
                 });
 
+            modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Professor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Certificacoes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Competencias")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Professores");
+                });
+
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -172,22 +205,7 @@ namespace apis_web_services_projeto_saber_mais.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios", (string)null);
-
-                    b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Professor", b =>
-                {
-                    b.HasBaseType("apis_web_services_projeto_saber_mais.Models.Usuario");
-
-                    b.Property<string>("Certificacoes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Competencias")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Professores", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("AreaProfessor", b =>
@@ -262,11 +280,9 @@ namespace apis_web_services_projeto_saber_mais.Migrations
 
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Professor", b =>
                 {
-                    b.HasOne("apis_web_services_projeto_saber_mais.Models.Usuario", null)
-                        .WithOne()
-                        .HasForeignKey("apis_web_services_projeto_saber_mais.Models.Professor", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("AgendamentosComoProfessor");
+
+                    b.Navigation("Disponibilidades");
                 });
 
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Usuario", b =>
@@ -274,13 +290,6 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                     b.Navigation("AgendamentosComoAluno");
 
                     b.Navigation("AvaliacoesFeitas");
-                });
-
-            modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Professor", b =>
-                {
-                    b.Navigation("AgendamentosComoProfessor");
-
-                    b.Navigation("Disponibilidades");
                 });
 #pragma warning restore 612, 618
         }
