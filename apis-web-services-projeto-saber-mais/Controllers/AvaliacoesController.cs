@@ -47,6 +47,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
                 return NotFound();
             }
 
+            GerarLinks(model);
             return Ok(model);
         }
 
@@ -75,6 +76,13 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private void GerarLinks(Avaliacao model)
+        {
+            model.Links.Add(new LinkDto(model.Id, Url.ActionLink(), rel: "self", metodo: "GET"));
+            model.Links.Add(new LinkDto(model.Id, Url.ActionLink(), rel: "update_usuario", metodo: "PUT"));
+            model.Links.Add(new LinkDto(model.Id, Url.ActionLink(), rel: "delete_usuario", metodo: "DELETE"));
         }
 
     }
