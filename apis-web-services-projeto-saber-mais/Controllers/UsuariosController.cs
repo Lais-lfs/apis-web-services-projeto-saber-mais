@@ -37,7 +37,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         public async Task<ActionResult> GetById(int id)
         {
             var usuario = await _context.Usuarios
-                .Include(t => t.AgendamentosComoAluno) // Inclui os agendamentos onde o usuário é aluno
+                .Include(u => u.Agendamentos) // Inclui os agendamentos onde o usuário é aluno
                 .Include(u => u.AvaliacoesFeitas) // Inclui as avaliações feitas pelo usuário
                 .FirstOrDefaultAsync(c => c.Id == id);
 

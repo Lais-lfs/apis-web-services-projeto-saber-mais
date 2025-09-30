@@ -17,13 +17,10 @@ namespace apis_web_services_projeto_saber_mais.Models
         public string Descricao { get; set; }
 
         // Relacionamento: Um usuário (aluno) pode ter vários agendamentos
-        public ICollection<Agendamento> AgendamentosComoAluno { get; set; } = new List<Agendamento>();
-        //public ICollection<Agendamento> AgendamentosComoProfessor { get; set; } = new List<Agendamento>();
+        public ICollection<Agendamento> Agendamentos { get; set; }
 
         // Relacionamento: Um usuário pode fazer várias avaliações
-        public ICollection<Avaliacao> AvaliacoesFeitas { get; set; } = new List<Avaliacao>();
+        public ICollection<Avaliacao> AvaliacoesFeitas { get; set; }
         //public ICollection<Avaliacao> AvaliacoesComoProfessor { get; set; } = new List<Avaliacao>();
-
-        //public Professor Professor { get; set; } // Navegação para Professor, se aplicável
     }
 }

@@ -36,7 +36,11 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var model = await _context.Avaliacoes.FirstOrDefaultAsync(c => c.Id == id);
+            var model = await _context.Avaliacoes
+                .Include(u => u.Agendamento) // Inclui o agendamento referente
+                .Include(u => u.AvaliadorAluno) // Inclui as informações do aluno
+                .Include(u => u.AvaliadorProfessor) // Inclui as informações do professor
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (model == null)
             {

@@ -20,10 +20,10 @@ namespace apis_web_services_projeto_saber_mais.Models
 
         // Chave estrangeira para quem fez a avaliação (o Avaliador)
         // Apenas um destes será preenchido.
-        public int? AvaliadorAlunoId { get; set; }
-        public virtual Usuario? AvaliadorAluno { get; set; }
+        public int AvaliadorAlunoId { get; set; }
+        public virtual Usuario AvaliadorAluno { get; set; }
 
-        public int? AvaliadorProfessorId { get; set; }
-        public virtual Professor? AvaliadorProfessor { get; set; }
+        public int AvaliadorProfessorId { get; set; }
+        public virtual Professor AvaliadorProfessor { get; set; }
     }
 }

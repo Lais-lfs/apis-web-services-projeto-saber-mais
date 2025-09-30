@@ -59,7 +59,7 @@ namespace apis_web_services_projeto_saber_mais.Models
             modelBuilder.Entity<Agendamento>(entity =>
             {
                 entity.HasOne(a => a.Aluno)
-                      .WithMany(u => u.AgendamentosComoAluno)
+                      .WithMany(u => u.Agendamentos)
                       .HasForeignKey(a => a.AlunoId)
                       .OnDelete(DeleteBehavior.Restrict);
 
