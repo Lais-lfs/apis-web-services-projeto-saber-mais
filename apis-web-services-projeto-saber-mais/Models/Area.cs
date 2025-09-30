@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace apis_web_services_projeto_saber_mais.Models
 {
-    [Table("Categorias")]
+    [Table("Areas")]
     public class Area
     {
         [Key]
@@ -13,6 +13,6 @@ namespace apis_web_services_projeto_saber_mais.Models
         public string Nome { get; set; } = null!;
 
         // Relacionamento: Uma categoria pode ter vários professores
-        public ICollection<Professor> Professores { get; set; } = new List<Professor>();
+        public ICollection<Professor> Professores { get; set; }
     }
 }
