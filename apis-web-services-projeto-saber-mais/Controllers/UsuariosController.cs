@@ -1,10 +1,13 @@
 ﻿using apis_web_services_projeto_saber_mais.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace apis_web_services_projeto_saber_mais.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsuariosController : ControllerBase
@@ -25,12 +28,21 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Usuario usuario)
+        public async Task<ActionResult> Create(UsuarioDto usuario)
         {
-            _context.Usuarios.Add(usuario);
+            Usuario novoUsuario = new Usuario()
+            {
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password),
+                Cpf = usuario.Cpf,
+                Descricao = usuario.Descricao
+            };
+
+            _context.Usuarios.Add(novoUsuario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetById", new {id = usuario.Id}, usuario);
+            return CreatedAtAction("GetById", new {id = novoUsuario.Id}, novoUsuario);
         }
 
         [HttpGet("{id}")]
@@ -51,7 +63,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, Usuario usuario)
+        public async Task<ActionResult> Update(int id, UsuarioDto usuario)
         {
             if (id != usuario.Id) return BadRequest();
 
@@ -59,7 +71,13 @@ namespace apis_web_services_projeto_saber_mais.Controllers
 
             if (usuarioDb == null) return NotFound();
 
-            _context.Usuarios.Update(usuario);
+            usuarioDb.Nome = usuario.Nome;
+            usuarioDb.Email = usuario.Email;
+            usuarioDb.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
+            usuarioDb.Cpf = usuario.Cpf;    
+            usuarioDb.Descricao = usuario.Descricao;
+
+            _context.Usuarios.Update(usuarioDb);
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -76,6 +94,19 @@ namespace apis_web_services_projeto_saber_mais.Controllers
 
             return NoContent();
         }
+
+        //[HttpPost("Authenticate")]
+        //public async Task<ActionResult> Authenticate(AuthenticateDto model)
+        //{
+        //    var usuarioDb = await _context.Usuarios.FindAsync(model.Id);
+
+        //    if (usuarioDb == null || !BCrypt.Net.BCrypt.Verify(model.Password, usuarioDb.Password))
+        //        return Unauthorized(new { message = "ID ou senha inválidos" });
+
+        //    var jwt = "xxx";
+            
+        //    return Ok(new { jwtToken = jwt });
+        //}
 
         private void GerarLinks(Usuario usuario)
         {
