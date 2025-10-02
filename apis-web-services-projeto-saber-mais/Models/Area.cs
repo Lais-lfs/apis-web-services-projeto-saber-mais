@@ -13,6 +13,8 @@ namespace apis_web_services_projeto_saber_mais.Models
         public string Nome { get; set; } = null!;
 
         // Relacionamento: Uma categoria pode ter vários professores
-        public ICollection<Professor> Professores { get; set; }
+        
+        //public ICollection<Professor> Professores { get; set; } = new List<Professor>();
+        public ICollection<ProfessorArea> Professores { get; set; }
     }
 }

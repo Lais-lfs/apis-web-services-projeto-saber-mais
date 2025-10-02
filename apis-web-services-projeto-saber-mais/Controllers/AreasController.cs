@@ -1,10 +1,12 @@
 ﻿using apis_web_services_projeto_saber_mais.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace apis_web_services_projeto_saber_mais.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AreasController : ControllerBase

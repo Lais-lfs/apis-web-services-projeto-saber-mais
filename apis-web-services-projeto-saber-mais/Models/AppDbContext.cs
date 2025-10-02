@@ -8,16 +8,23 @@ namespace apis_web_services_projeto_saber_mais.Models
     {
         public AppDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Professor> Professores { get; set; }
-        public DbSet<Area> Areas { get; set; }
-        public DbSet<Disponibilidade> Disponibilidades { get; set; }
-        public DbSet<Agendamento> Agendamentos { get; set; }
-        public DbSet<Avaliacao> Avaliacoes { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Relacionamento muitos-para-muitos entre Professor e Área
+            modelBuilder.Entity<ProfessorArea>()
+                   .HasKey(c => new { c.ProfessorId, c.AreaId });
+
+            modelBuilder.Entity<ProfessorArea>()
+                   .HasOne(c => c.Professor)
+                   .WithMany(c => c.Areas)
+                   .HasForeignKey(c => c.ProfessorId);
+
+            modelBuilder.Entity<ProfessorArea>()
+                   .HasOne(c => c.Area)
+                   .WithMany(c => c.Professores)
+                   .HasForeignKey(c => c.AreaId);
 
             // --- Configuração de herança TPT (Table-per-Type) ---
             modelBuilder.Entity<Usuario>().ToTable("Usuarios");
@@ -50,9 +57,9 @@ namespace apis_web_services_projeto_saber_mais.Models
                     .Metadata.SetValueComparer(listComparer);
 
                 // Relacionamento muitos-para-muitos entre Professor e Área
-                entity.HasMany(p => p.Areas)
-                      .WithMany(c => c.Professores)
-                      .UsingEntity(j => j.ToTable("ProfessorArea"));
+                //entity.HasMany(p => p.Areas)
+                //      .WithMany(c => c.Professores)
+                //      .UsingEntity(j => j.ToTable("ProfessorArea"));
             });
 
             // --- Configuração da Entidade Agendamento ---
@@ -103,5 +110,13 @@ namespace apis_web_services_projeto_saber_mais.Models
                       .OnDelete(DeleteBehavior.Restrict);
             });
         }
+
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Professor> Professores { get; set; }
+        public DbSet<Area> Areas { get; set; }
+        public DbSet<Disponibilidade> Disponibilidades { get; set; }
+        public DbSet<Agendamento> Agendamentos { get; set; }
+        public DbSet<Avaliacao> Avaliacoes { get; set; }
+        public DbSet<ProfessorArea> ProfessorAreas { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         public async Task<ActionResult> GetById(int id)
         {
             var professor = await _context.Professores
-                .Include(p => p.Areas)
+                .Include(p => p.Areas).ThenInclude(pa => pa.Area)
                 .Include(p => p.Disponibilidades)
                 .Include(p => p.AgendamentosComoProfessor)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -68,7 +68,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             existingProfessor.Certificacoes = professor.Certificacoes ?? new List<string>();
             existingProfessor.Competencias = professor.Competencias ?? new List<string>();
 
-            existingProfessor.Areas = professor.Areas ?? new List<Area>();
+            //existingProfessor.Areas = professor.Areas ?? new List<Area>();
             existingProfessor.Disponibilidades = professor.Disponibilidades ?? new List<Disponibilidade>();
 
             try
@@ -94,6 +94,32 @@ namespace apis_web_services_projeto_saber_mais.Controllers
 
             _context.Professores.Remove(professor);
             await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPost("{id}/areas")]
+        public async Task<ActionResult> AddAreaToProfessor(int id, ProfessorArea model)
+        {
+            if(id != model.ProfessorId)
+                return BadRequest("ID do Professor não corresponde.");
+            _context.ProfessorAreas.Add(model);
+            await _context.SaveChangesAsync();      
+
+            return CreatedAtAction("GetById", new { id = model.ProfessorId }, model);
+        }
+
+        [HttpDelete("{id}/areas/{areaId}")]
+        public async Task<ActionResult> DeleteArea(int id, int AreaId)
+        {
+            var model = await _context.ProfessorAreas
+                .Where(c => c.ProfessorId == id && c.AreaId == AreaId)
+                .FirstOrDefaultAsync();
+
+            if (model == null) return NotFound();
+
+            _context.ProfessorAreas.Remove(model);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }
