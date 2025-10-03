@@ -4,35 +4,36 @@
 
 namespace apis_web_services_projeto_saber_mais.Migrations
 {
-    /// <inheritdoc />
-    public partial class M005 : Migration
+    public partial class M006 : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProfessorArea_Areas_AreasId",
-                table: "ProfessorArea");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProfessorArea_Professores_ProfessoresId",
-                table: "ProfessorArea");
-
+            // Renomeia colunas da tabela ProfessorArea
             migrationBuilder.RenameColumn(
                 name: "ProfessoresId",
                 table: "ProfessorArea",
-                newName: "AreaId");
+                newName: "ProfessorId");
 
             migrationBuilder.RenameColumn(
                 name: "AreasId",
                 table: "ProfessorArea",
-                newName: "ProfessorId");
+                newName: "AreaId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_ProfessorArea_ProfessoresId",
                 table: "ProfessorArea",
-                newName: "IX_ProfessorArea_AreaId");
+                newName: "IX_ProfessorArea_ProfessorId");
 
+            // Remove quaisquer FKs antigas, se existirem
+            migrationBuilder.Sql(@"
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorArea_Areas_AreasId')
+    ALTER TABLE ProfessorArea DROP CONSTRAINT [FK_ProfessorArea_Areas_AreasId];
+
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_ProfessorArea_Professores_ProfessoresId')
+    ALTER TABLE ProfessorArea DROP CONSTRAINT [FK_ProfessorArea_Professores_ProfessoresId];
+");
+
+            // Adiciona as FKs corretas
             migrationBuilder.AddForeignKey(
                 name: "FK_ProfessorArea_Areas_AreaId",
                 table: "ProfessorArea",
@@ -50,9 +51,9 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                 onDelete: ReferentialAction.Cascade);
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            // Remove as FKs
             migrationBuilder.DropForeignKey(
                 name: "FK_ProfessorArea_Areas_AreaId",
                 table: "ProfessorArea");
@@ -61,36 +62,21 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                 name: "FK_ProfessorArea_Professores_ProfessorId",
                 table: "ProfessorArea");
 
+            // Renomeia colunas de volta
             migrationBuilder.RenameColumn(
-                name: "AreaId",
+                name: "ProfessorId",
                 table: "ProfessorArea",
                 newName: "ProfessoresId");
 
             migrationBuilder.RenameColumn(
-                name: "ProfessorId",
+                name: "AreaId",
                 table: "ProfessorArea",
                 newName: "AreasId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_ProfessorArea_AreaId",
+                name: "IX_ProfessorArea_ProfessorId",
                 table: "ProfessorArea",
                 newName: "IX_ProfessorArea_ProfessoresId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProfessorArea_Areas_AreasId",
-                table: "ProfessorArea",
-                column: "AreasId",
-                principalTable: "Areas",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProfessorArea_Professores_ProfessoresId",
-                table: "ProfessorArea",
-                column: "ProfessoresId",
-                principalTable: "Professores",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
     }
 }

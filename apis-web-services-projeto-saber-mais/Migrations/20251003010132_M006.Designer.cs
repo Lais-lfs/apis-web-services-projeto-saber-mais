@@ -12,8 +12,8 @@ using apis_web_services_projeto_saber_mais.Models;
 namespace apis_web_services_projeto_saber_mais.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251002022156_M005")]
-    partial class M005
+    [Migration("20251003010132_M006")]
+    partial class M006
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

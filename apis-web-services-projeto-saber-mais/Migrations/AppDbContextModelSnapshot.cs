@@ -22,21 +22,6 @@ namespace apis_web_services_projeto_saber_mais.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AreaProfessor", b =>
-                {
-                    b.Property<int>("AreasId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfessoresId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AreasId", "ProfessoresId");
-
-                    b.HasIndex("ProfessoresId");
-
-                    b.ToTable("ProfessorArea", (string)null);
-                });
-
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Agendamento", b =>
                 {
                     b.Property<int>("Id")
@@ -184,6 +169,21 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                     b.ToTable("LinkDto");
                 });
 
+            modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.ProfessorArea", b =>
+                {
+                    b.Property<int>("ProfessorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AreaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProfessorId", "AreaId");
+
+                    b.HasIndex("AreaId");
+
+                    b.ToTable("ProfessorArea");
+                });
+
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -229,21 +229,6 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Professores", (string)null);
-                });
-
-            modelBuilder.Entity("AreaProfessor", b =>
-                {
-                    b.HasOne("apis_web_services_projeto_saber_mais.Models.Area", null)
-                        .WithMany()
-                        .HasForeignKey("AreasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("apis_web_services_projeto_saber_mais.Models.Professor", null)
-                        .WithMany()
-                        .HasForeignKey("ProfessoresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Agendamento", b =>
@@ -318,6 +303,25 @@ namespace apis_web_services_projeto_saber_mais.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
+            modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.ProfessorArea", b =>
+                {
+                    b.HasOne("apis_web_services_projeto_saber_mais.Models.Area", "Area")
+                        .WithMany("Professores")
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("apis_web_services_projeto_saber_mais.Models.Professor", "Professor")
+                        .WithMany("Areas")
+                        .HasForeignKey("ProfessorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Area");
+
+                    b.Navigation("Professor");
+                });
+
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Professor", b =>
                 {
                     b.HasOne("apis_web_services_projeto_saber_mais.Models.Usuario", null)
@@ -330,6 +334,8 @@ namespace apis_web_services_projeto_saber_mais.Migrations
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Area", b =>
                 {
                     b.Navigation("Links");
+
+                    b.Navigation("Professores");
                 });
 
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Avaliacao", b =>
@@ -349,6 +355,8 @@ namespace apis_web_services_projeto_saber_mais.Migrations
             modelBuilder.Entity("apis_web_services_projeto_saber_mais.Models.Professor", b =>
                 {
                     b.Navigation("AgendamentosComoProfessor");
+
+                    b.Navigation("Areas");
 
                     b.Navigation("Disponibilidades");
                 });
