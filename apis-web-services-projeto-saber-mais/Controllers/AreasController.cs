@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace apis_web_services_projeto_saber_mais.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AreasController : ControllerBase

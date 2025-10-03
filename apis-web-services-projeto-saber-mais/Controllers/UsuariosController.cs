@@ -3,13 +3,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Generators;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace apis_web_services_projeto_saber_mais.Controllers
 {
-    //[Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsuariosController : ControllerBase
     {
         //Essa configuração de contexto é necessária para que o controller consiga se comunicar com o banco de dados
@@ -95,18 +100,40 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             return NoContent();
         }
 
-        //[HttpPost("Authenticate")]
-        //public async Task<ActionResult> Authenticate(AuthenticateDto model)
-        //{
-        //    var usuarioDb = await _context.Usuarios.FindAsync(model.Id);
+        [AllowAnonymous]
+        [HttpPost("Authenticate")]
+        public async Task<ActionResult> Authenticate(AuthenticateDto model)
+        {
+            var usuarioDb = await _context.Usuarios.FindAsync(model.Id);
 
-        //    if (usuarioDb == null || !BCrypt.Net.BCrypt.Verify(model.Password, usuarioDb.Password))
-        //        return Unauthorized(new { message = "ID ou senha inválidos" });
+            if (usuarioDb == null || !BCrypt.Net.BCrypt.Verify(model.Password, usuarioDb.Password))
+                return Unauthorized(new { message = "ID ou senha inválidos" });
 
-        //    var jwt = "xxx";
+            var jwt = GenerateJwtToken(usuarioDb);
             
-        //    return Ok(new { jwtToken = jwt });
-        //}
+            return Ok(new { jwtToken = jwt });
+        }
+
+        private string GenerateJwtToken(Usuario model)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("qRdTMX205LuFGg3zVccB8NxD2p6g0YOB");
+            var claims = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString())
+            });
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = claims,
+                Expires = DateTime.UtcNow.AddHours(8),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
 
         private void GerarLinks(Usuario usuario)
         {
