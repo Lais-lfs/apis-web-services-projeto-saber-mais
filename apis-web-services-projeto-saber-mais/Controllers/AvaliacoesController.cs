@@ -29,10 +29,38 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Avaliacao model)
         {
-            _context.Avaliacoes.Add(model);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                // Retorna 400 com os erros de validação encontrados (ex: "O campo 'nota' é obrigatório.")
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetById", new { id = model.Id }, model);
+            var agendamentoExistente = await _context.Agendamentos.FindAsync(model.AgendamentoId);
+
+            if (agendamentoExistente == null)
+            {
+                return BadRequest(new { message = $"Agendamento com o ID {model.AgendamentoId} não foi encontrado." });
+            }
+
+            if (agendamentoExistente.AlunoId != model.AvaliadorAlunoId || agendamentoExistente.ProfessorId != model.AvaliadorProfessorId)
+            {
+                return BadRequest(new { message = "O aluno ou professor avaliador não corresponde aos dados do agendamento." });
+            }
+
+            // Se todas as validações passaram, procede com a criação
+            try
+            {
+                _context.Avaliacoes.Add(model);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetById", new { id = model.Id }, model);
+            }
+            catch (Exception ex)
+            {
+                // Uma camada extra de segurança para capturar qualquer outro erro inesperado
+                // e evitar o erro 500 genérico, dando um pouco mais de contexto.
+                return StatusCode(500, new { message = "Ocorreu um erro interno ao salvar a avaliação.", error = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]
