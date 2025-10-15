@@ -27,7 +27,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         // Apenas um destes será preenchido.
         [Required(ErrorMessage = "O campo 'avaliadorAlunoId' é obrigatório.")]
         public int AvaliadorAlunoId { get; set; }
-        public virtual Usuario AvaliadorAluno { get; set; }
+        public virtual Aluno AvaliadorAluno { get; set; }
 
         [Required(ErrorMessage = "O campo 'avaliadorProfessorId' é obrigatório.")]
         public int AvaliadorProfessorId { get; set; }

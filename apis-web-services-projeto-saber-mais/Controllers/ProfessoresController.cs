@@ -39,18 +39,31 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Professor professor)
+        public async Task<ActionResult> Create(ProfessorDto professor)
         {
             if (professor == null) return BadRequest();
 
-            _context.Professores.Add(professor);
+            Professor novoProfessor = new Professor()
+            {
+                Nome = professor.Nome,
+                Email = professor.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(professor.Password),
+                Cpf = professor.Cpf,
+                Tipo = Usuario.EnumTipoUsuario.Professor,
+                Descricao = professor.Descricao,
+                Certificacoes = professor.Certificacoes ?? new List<string>(),
+                Competencias = professor.Competencias ?? new List<string>(),
+                ValorHora = professor.ValorHora
+            };
+
+            _context.Professores.Add(novoProfessor);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = professor.Id }, professor);
+            return CreatedAtAction(nameof(GetById), new { id = novoProfessor.Id }, novoProfessor);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, Professor professor)
+        public async Task<ActionResult> Update(int id, ProfessorDto professor)
         {
             if (professor == null || id != professor.Id) return BadRequest();
 
@@ -64,14 +77,17 @@ namespace apis_web_services_projeto_saber_mais.Controllers
 
             existingProfessor.Nome = professor.Nome;
             existingProfessor.Email = professor.Email;
+            existingProfessor.Password = BCrypt.Net.BCrypt.HashPassword(professor.Password);
             existingProfessor.Cpf = professor.Cpf;
+            existingProfessor.Tipo = professor.Tipo;
             existingProfessor.Descricao = professor.Descricao;
+            existingProfessor.ValorHora = professor.ValorHora;
 
             existingProfessor.Certificacoes = professor.Certificacoes ?? new List<string>();
             existingProfessor.Competencias = professor.Competencias ?? new List<string>();
 
             //existingProfessor.Areas = professor.Areas ?? new List<Area>();
-            existingProfessor.Disponibilidades = professor.Disponibilidades ?? new List<Disponibilidade>();
+            //existingProfessor.Disponibilidades = professor.Disponibilidades ?? new List<Disponibilidade>();
 
             try
             {

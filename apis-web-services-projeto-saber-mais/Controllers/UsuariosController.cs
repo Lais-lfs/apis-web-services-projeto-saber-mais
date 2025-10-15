@@ -41,7 +41,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
                 Email = usuario.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password),
                 Cpf = usuario.Cpf,
-                Descricao = usuario.Descricao
+                //Descricao = usuario.Descricao
             };
 
             _context.Usuarios.Add(novoUsuario);
@@ -53,10 +53,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
-            var usuario = await _context.Usuarios
-                .Include(u => u.Agendamentos) // Inclui os agendamentos onde o usuário é aluno
-                .Include(u => u.AvaliacoesFeitas) // Inclui as avaliações feitas pelo usuário
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(c => c.Id == id);
 
             if (usuario == null)
             {
@@ -80,7 +77,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             usuarioDb.Email = usuario.Email;
             usuarioDb.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
             usuarioDb.Cpf = usuario.Cpf;    
-            usuarioDb.Descricao = usuario.Descricao;
+            //usuarioDb.Descricao = usuario.Descricao;
 
             _context.Usuarios.Update(usuarioDb);
             await _context.SaveChangesAsync();

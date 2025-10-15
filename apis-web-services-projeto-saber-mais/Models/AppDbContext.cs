@@ -28,6 +28,7 @@ namespace apis_web_services_projeto_saber_mais.Models
 
             // --- Configuração de herança TPT (Table-per-Type) ---
             modelBuilder.Entity<Usuario>().ToTable("Usuarios");
+            modelBuilder.Entity<Aluno>().ToTable("Alunos");
             modelBuilder.Entity<Professor>().ToTable("Professores");
 
             // Comparador para listas de strings (usado nos ValueComparers)
@@ -112,6 +113,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Aluno> Alunos { get; set; }
         public DbSet<Professor> Professores { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Disponibilidade> Disponibilidades { get; set; }

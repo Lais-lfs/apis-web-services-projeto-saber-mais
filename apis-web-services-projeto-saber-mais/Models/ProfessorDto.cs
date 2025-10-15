@@ -1,31 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+using static apis_web_services_projeto_saber_mais.Models.Usuario;
 
 namespace apis_web_services_projeto_saber_mais.Models
 {
-    [Table("Usuarios")] 
-    public class Usuario : LinksHATEOS
+    public class ProfessorDto
     {
-        [Key]
-        public int Id { get; set; }
+        public int? Id { get; set; }
         [Required]
         public string Nome { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
-        [JsonIgnore]
         public string Password { get; set; }
         [Required]
         public string Cpf { get; set; }
         [Required]
         public EnumTipoUsuario Tipo { get; set; }
-
-        public enum EnumTipoUsuario
-        {
-            Aluno,
-            Professor,
-            Admin
-        }
+        [Required]
+        public string Descricao { get; set; }
+        [Required]
+        public List<string> Certificacoes { get; set; }
+        [Required]
+        public List<string> Competencias { get; set; }
+        [Required]
+        public decimal ValorHora { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace apis_web_services_projeto_saber_mais.Models
 
         // Relações
         public int AlunoId { get; set; }
-        public virtual Usuario Aluno { get; set; }
+        public virtual Aluno Aluno { get; set; }
 
         public int ProfessorId { get; set; }
         public virtual Professor Professor { get; set; }

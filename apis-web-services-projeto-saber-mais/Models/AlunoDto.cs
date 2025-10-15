@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using static apis_web_services_projeto_saber_mais.Models.Usuario;
 
 namespace apis_web_services_projeto_saber_mais.Models
 {
-    public class UsuarioDto
+    public class AlunoDto
     {
         public int? Id { get; set; }
         [Required]
@@ -14,5 +14,8 @@ namespace apis_web_services_projeto_saber_mais.Models
         public string Password { get; set; }
         [Required]
         public string Cpf { get; set; }
+        [Required]
+        public EnumTipoUsuario Tipo { get; set; }
+        public string Descricao { get; set; }
     }
 }
