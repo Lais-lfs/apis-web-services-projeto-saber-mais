@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 
-var MyAllowSpecificOrigins = "_myFrontendOriginPolicy";
+var MyAllowSpecificOrigins = "AllowFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +18,8 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://127.0.0.1:5501") // URL do frontend
                                 .AllowAnyHeader()
-                                .AllowAnyMethod();
+                                .AllowAnyMethod()
+                                .AllowCredentials();
                       });
 });
 
@@ -46,6 +47,20 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false, // Ajustei para false, já que você não está usando Audience definido
 
         ValidateLifetime = true
+    };
+
+    // Lê o token do cookie chamado "jwt"
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Cookies["jwt"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 

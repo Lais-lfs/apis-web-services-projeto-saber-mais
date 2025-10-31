@@ -22,5 +22,6 @@ namespace apis_web_services_projeto_saber_mais.Models
         public ICollection<ProfessorArea> Areas { get; set; }
         public ICollection<Agendamento> AgendamentosComoProfessor { get; set; } = new List<Agendamento>();
         public ICollection<Disponibilidade> Disponibilidades { get; set; } = new List<Disponibilidade>();
+        public ICollection<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
     }
 }

@@ -25,6 +25,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet] // GET: api/Usuarios; busca todos os usuários cadastrados no banco de dados
         public async Task<ActionResult> GetAll()
         {
@@ -32,6 +33,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             return Ok(usuarios);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> Create(UsuarioDto usuario)
         {
@@ -101,14 +103,27 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         [HttpPost("Authenticate")]
         public async Task<ActionResult> Authenticate(AuthenticateDto model)
         {
-            var usuarioDb = await _context.Usuarios.FindAsync(model.Id);
+            var usuarioDb = await _context.Usuarios.FirstOrDefaultAsync(u=> u.Email == model.Email);
 
             if (usuarioDb == null || !BCrypt.Net.BCrypt.Verify(model.Password, usuarioDb.Password))
-                return Unauthorized(new { message = "ID ou senha inválidos" });
+                return Unauthorized(new { message = "Email ou senha inválidos." });
 
             var jwt = GenerateJwtToken(usuarioDb);
-            
-            return Ok(new { jwtToken = jwt });
+
+            // Cria cookie seguro e HttpOnly
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // mantenha true se for HTTPS, false apenas para localhost HTTP
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddHours(8)
+            };
+
+            Response.Cookies.Append("jwt", jwt, cookieOptions);
+
+            return Ok(new { message = "Login realizado com sucesso!" });
+
+            //return Ok(new { jwtToken = jwt });
         }
 
         private string GenerateJwtToken(Usuario model)
@@ -117,7 +132,8 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             var key = Encoding.ASCII.GetBytes("qRdTMX205LuFGg3zVccB8NxD2p6g0YOB");
             var claims = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString()),
+                new Claim(ClaimTypes.Email, model.Email)
             });
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -131,6 +147,23 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             return tokenHandler.WriteToken(token);
         }
 
+        [Authorize]
+        [HttpPost("Logout")]
+        public ActionResult Logout()
+        {
+            if (Request.Cookies["jwt"] != null)
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // mantenha true se for HTTPS, false apenas para localhost HTTP
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(-1) // Define a expiração para uma data passada
+                };
+                Response.Cookies.Append("jwt", "", cookieOptions);
+            }
+            return Ok(new { message = "Logout realizado com sucesso." });
+        }
 
         private void GerarLinks(Usuario usuario)
         {

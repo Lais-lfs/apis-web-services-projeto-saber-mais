@@ -19,6 +19,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet] // GET: api/Alunos; busca todos os alunos cadastrados no banco de dados
         public async Task<ActionResult> GetAll()
         {
@@ -26,6 +27,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             return Ok(model);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> Create(AlunoDto usuario)
         {

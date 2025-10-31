@@ -24,6 +24,7 @@ namespace apis_web_services_projeto_saber_mais.Models
         public TimeSpan HoraFim { get; set; }
 
         // Relação com Professor
+        [Required]
         public int ProfessorId { get; set; }
         public virtual Professor Professor { get; set; }
     }

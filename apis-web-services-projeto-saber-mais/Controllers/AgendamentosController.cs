@@ -59,6 +59,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             existingAgendamento.Status = agendamento.Status;
             existingAgendamento.AlunoId = agendamento.AlunoId;
             existingAgendamento.ProfessorId = agendamento.ProfessorId;
+            existingAgendamento.DisciplinaId = agendamento.DisciplinaId;
 
             try
             {

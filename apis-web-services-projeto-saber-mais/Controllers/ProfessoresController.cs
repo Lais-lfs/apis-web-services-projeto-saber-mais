@@ -13,6 +13,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         private readonly AppDbContext _context;
         public ProfessoresController(AppDbContext context) => _context = context;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
@@ -20,6 +21,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
                 .Include(p => p.Areas)
                 .Include(p => p.Disponibilidades)
                 .Include(p => p.AgendamentosComoProfessor)
+                .Include(p => p.Avaliacoes)
                 .ToListAsync();
             return Ok(professores);
         }
@@ -31,6 +33,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
                 .Include(p => p.Areas).ThenInclude(pa => pa.Area)
                 .Include(p => p.Disponibilidades)
                 .Include(p => p.AgendamentosComoProfessor)
+                .Include(p => p.Avaliacoes)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (professor == null) return NotFound();
@@ -38,6 +41,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             return Ok(professor);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> Create(ProfessorDto professor)
         {
@@ -71,6 +75,7 @@ namespace apis_web_services_projeto_saber_mais.Controllers
                 .Include(p => p.Areas)
                 .Include(p => p.Disponibilidades)
                 .Include(p => p.AgendamentosComoProfessor)
+                .Include(p => p.Avaliacoes)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (existingProfessor == null) return NotFound();
