@@ -111,19 +111,19 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             var jwt = GenerateJwtToken(usuarioDb);
 
             // Cria cookie seguro e HttpOnly
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, // mantenha true se for HTTPS, false apenas para localhost HTTP
-                SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddHours(8)
-            };
+            //var cookieOptions = new CookieOptions
+            //{
+            //    HttpOnly = true,
+            //    Secure = true, // mantenha true se for HTTPS, false apenas para localhost HTTP
+            //    SameSite = SameSiteMode.None,
+            //    Expires = DateTime.UtcNow.AddHours(8)
+            //};
 
-            Response.Cookies.Append("jwt", jwt, cookieOptions);
+            //Response.Cookies.Append("jwt", jwt, cookieOptions);
 
-            return Ok(new { message = "Login realizado com sucesso!" });
+            //return Ok(usuarioDb);
 
-            //return Ok(new { jwtToken = jwt });
+            return Ok(new { jwtToken = jwt });
         }
 
         private string GenerateJwtToken(Usuario model)
@@ -146,6 +146,32 @@ namespace apis_web_services_projeto_saber_mais.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult> GetLoggedUser()
+        {
+            // Pega o ID do usuário do token JWT
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+                return Unauthorized();
+
+            var usuario = await _context.Usuarios
+                .Where(u => u.Id == int.Parse(userId))
+                .Select(u => new {
+                    u.Id,
+                    u.Nome,
+                    u.Email
+                })
+                .FirstOrDefaultAsync();
+
+            if (usuario == null)
+                return NotFound();
+
+            return Ok(usuario);
+        }
+
 
         [Authorize]
         [HttpPost("Logout")]
