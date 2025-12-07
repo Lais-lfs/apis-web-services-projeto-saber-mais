@@ -39,6 +39,9 @@ namespace apis_web_services_projeto_saber_mais.Controllers
         {
             if (agendamento == null) return BadRequest();
 
+            // Garante que o EF gere o ID
+            agendamento.Id = 0;
+
             _context.Agendamentos.Add(agendamento);
             await _context.SaveChangesAsync();
 
